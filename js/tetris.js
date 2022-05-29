@@ -195,6 +195,7 @@ reStart()
 
 document.addEventListener("keydown",(e)=>{
         if(gameText.style.display === "flex"){
+            playground.innerHTML = "";
             gameText.style.display = "none";
             init();
         }
