@@ -53,33 +53,33 @@ function prependNewline() {
 
 
 function renderBlocks(moveType = "") {
-    const {type , direction, top, left} = tempMovingItem;
+    const { type, direction, top, left } = tempMovingItem;
     const movingBlocks = document.querySelectorAll(".moving");
-    movingBlocks.forEach(moving =>{
-        moving.classList.remove(type,"moving")
+    movingBlocks.forEach(moving => {
+        moving.classList.remove(type, "moving")
     })
     BLOCKS[type][direction].some(block => { // forEach는 break가 되지않기 떄문에 some사용
         const x = block[0] + left;
         const y = block[1] + top;
         const target = playground.childNodes[y] ? playground.childNodes[y].childNodes[0].childNodes[x] : null;
         const isAvailable = checkEmpty(target);
-        if(isAvailable){ 
-            target.classList.add(type,"moving");
-        }else{
-            tempMovingItem = {...movingItem}
-            if(moveType === "retry"){
+        if (isAvailable) {
+            target.classList.add(type, "moving");
+        } else {
+            tempMovingItem = { ...movingItem }
+            if (moveType === "retry") {
                 clearInterval(downIneterval);
                 showGameOverText();
             }
-            setTimeout(()=>{
+            setTimeout(() => {
                 renderBlocks("retry");
-                if(moveType === "top"){
+                if (moveType === "top") {
                     seizseBlock();
                 }
-            },0)
-           return true;
+            }, 0)
+            return true;
         }
-        
+
     })
     // 위치 잡아주기
     movingItem.left = left;
@@ -87,9 +87,9 @@ function renderBlocks(moveType = "") {
     movingItem.direction = direction;
 }
 
-function seizseBlock(){
+function seizseBlock() {
     const movingBlocks = document.querySelectorAll(".moving");
-    movingBlocks.forEach(moving =>{
+    movingBlocks.forEach(moving => {
         moving.classList.remove("moving");
         moving.classList.add("seized");
     })
@@ -97,16 +97,16 @@ function seizseBlock(){
 
 }
 
-function checkMatch(){
+function checkMatch() {
     const childNodes = playground.childNodes;
     childNodes.forEach(child => {
         let matched = true;
-        child.children[0].childNodes.forEach(li=>{
-            if(!li.classList.contains("seized")){
+        child.children[0].childNodes.forEach(li => {
+            if (!li.classList.contains("seized")) {
                 matched = false;
             }
         })
-        if(matched){
+        if (matched) {
             child.remove();
             prependNewline();
             score++;
@@ -117,60 +117,60 @@ function checkMatch(){
 }
 
 
-function generateNewBlock(){
+function generateNewBlock() {
     clearInterval(downIneterval);
-    downIneterval = setInterval(()=>{
-        moveBlock("top",1)
-    },duration)
+    downIneterval = setInterval(() => {
+        moveBlock("top", 1)
+    }, duration)
     const blockArray = Object.entries(BLOCKS);
     const randomIndex = Math.floor(Math.random() * blockArray.length);
     movingItem.type = blockArray[randomIndex][0];
     movingItem.top = 0;
     movingItem.left = 3;
     movingItem.direction = 0;
-    tempMovingItem = {...movingItem};
+    tempMovingItem = { ...movingItem };
     renderBlocks();
 }
 
-function checkEmpty(target){
-    if(!target || target.classList.contains("seized")){ // seized라는 class를 갖고있다면
+function checkEmpty(target) {
+    if (!target || target.classList.contains("seized")) { // seized라는 class를 갖고있다면
         return false;
     }
     return true;
 }
 
-function moveBlock(moveType, amount){
+function moveBlock(moveType, amount) {
     tempMovingItem[moveType] += amount;
     renderBlocks(moveType)
 }
 
-function changeDirection(){
+function changeDirection() {
     const direction = tempMovingItem.direction;
     direction === 3 ? tempMovingItem.direction = 0 : tempMovingItem.direction += 1;
     renderBlocks()
-    
+
 }
-function dropBlock(){
+function dropBlock() {
     clearInterval(downIneterval);
-    downIneterval = setInterval(()=>{
-        moveBlock("top",1)
-    },10) // 10 = 속도
+    downIneterval = setInterval(() => {
+        moveBlock("top", 1)
+    }, 10) // 10 = 속도
 }
 
-function showGameOverText(){
+function showGameOverText() {
     gameText.style.display = "flex";
 }
 // event handling
-document.addEventListener("keydown",e=>{
-    switch(e.keyCode){
-        case 39: 
-            moveBlock("left",1);
+document.addEventListener("keydown", e => {
+    switch (e.keyCode) {
+        case 39:
+            moveBlock("left", 1);
             break;
-        case 37: 
-            moveBlock("left",-1);
+        case 37:
+            moveBlock("left", -1);
             break;
         case 40:
-            moveBlock("top",1);
+            moveBlock("top", 1);
             break;
         case 38:
             changeDirection();
@@ -183,8 +183,19 @@ document.addEventListener("keydown",e=>{
     }
 })
 
-restartBtn.addEventListener("click",()=>{
-    playground.innerHTML = "";
-    gameText.style.display = "none";
-    init();
-})
+function reStart() {
+    restartBtn.addEventListener("click", () => {
+        playground.innerHTML = "";
+        gameText.style.display = "none";
+        init();
+    })
+}
+
+reStart()
+
+document.addEventListener("keydown",(e)=>{
+        if(gameText.style.display === "flex"){
+            gameText.style.display = "none";
+            init();
+        }
+    })
