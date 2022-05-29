@@ -184,19 +184,19 @@ document.addEventListener("keydown", e => {
 })
 
 function reStart() {
-    restartBtn.addEventListener("click", () => {
         playground.innerHTML = "";
         gameText.style.display = "none";
+        scoreDisplay.innerText = 0;
         init();
-    })
 }
 
-reStart()
+restartBtn.addEventListener("click", () => {
+    reStart();
+})
 
-document.addEventListener("keydown",(e)=>{
-        if(gameText.style.display === "flex"){
-            playground.innerHTML = "";
-            gameText.style.display = "none";
-            init();
-        }
-    })
+
+document.addEventListener("keydown", () => {
+    if (gameText.style.display === "flex") {
+        reStart();
+    }
+})
